@@ -6,8 +6,14 @@ import Revise from "./pages/Sell/Revise";
 import SearchBar from "./components/SearchBar";
 import { useState, useEffect } from "react";
 import Products from "./components/Products";
+import getWeb3 from "./getWeb3";
+import SimpleStorage from "./client/SimpleStorage.json";
+import Login from "./components/Login";
 
 const App = () => {
+  const [web3, setWeb3] = useState(undefined);
+  const [accounts, setAccounts] = useState(undefined);
+  const [contract, setContract] = useState(undefined);
   const [products, setProducts] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [searchResults, setSearchResults] = useState([]);
@@ -17,11 +23,29 @@ const App = () => {
   // });
 
   useEffect(() => {
+    const init = async () => {
+      const web3 = await getWeb3();
+
+      const accounts = await web3.eth.getAcconts();
+
+      const networkId = await web3.eth.net.getId();
+      const deployNetwork = SimpleStorage.networks[networkId];
+
+      const instance = new web3.eth.contract(
+        SimpleStorage.abi,
+        deployNetwork && deployNetwork.address
+      );
+
+      setWeb3(web3);
+      setAccounts(accounts);
+      setContract(contract);
+    };
+
     const getProducts = async () => {
       const productsFromServer = await fetchProducts();
       setProducts(productsFromServer);
     };
-
+    init();
     getProducts();
   }, []);
 
@@ -102,7 +126,7 @@ const App = () => {
           />
 
           <Route path="/detail/:id" component={Detail} />
-
+          <Route path="/login" component={Login} />
           <Route path="/revise" component={Revise} />
         </body>
       </div>

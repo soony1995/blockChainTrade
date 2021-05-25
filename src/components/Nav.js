@@ -1,5 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import { useWallet, UseWalletProvider } from "use-wallet";
 
 const Nav = () => {
   return (
@@ -46,4 +47,13 @@ const Nav = () => {
   );
 };
 
-export default Nav;
+export default () => (
+  <UseWalletProvider
+    chainId={1337}
+    connectors={{
+      provided: { provider: window.cleanEthereum },
+    }}
+  >
+    <Connection />
+  </UseWalletProvider>
+);
