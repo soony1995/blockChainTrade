@@ -2,21 +2,19 @@ import Nav from "./components/Nav";
 import { BrowserRouter as Router, Route } from "react-router-dom";
 import Enroll from "./pages/Sell/Enroll";
 import Detail from "./pages/Buy/Detail";
-import Revise from "./pages/Sell/Revise";
 import SearchBar from "./components/SearchBar";
 import { useState, useEffect } from "react";
 import Products from "./components/Products";
 import getWeb3 from "./getWeb3";
 import SimpleStorage from "./client/SimpleStorage.json";
-import Login from "./components/Login";
 
 const App = () => {
-  const [web3, setWeb3] = useState(undefined);
-  const [accounts, setAccounts] = useState(undefined);
-  const [contract, setContract] = useState(undefined);
   const [products, setProducts] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [searchResults, setSearchResults] = useState([]);
+  const [accounts, setAccounts] = useState(null);
+  const [contract, setContract] = useState(null);
+  const [web3, setWeb3] = useState(null);
 
   // const renderProductList = products.map((product) => {
   //   return <Search product={product} key={product.id} />;
@@ -25,31 +23,41 @@ const App = () => {
   useEffect(() => {
     const init = async () => {
       const web3 = await getWeb3();
-
-      const accounts = await web3.eth.getAcconts();
+      const accounts = await web3.eth.getAccounts();
 
       const networkId = await web3.eth.net.getId();
-      const deployNetwork = SimpleStorage.networks[networkId];
 
-      const instance = new web3.eth.contract(
+      const deployedNetwork = SimpleStorage.networks[networkId];
+      const instance = new web3.eth.Contract(
         SimpleStorage.abi,
-        deployNetwork && deployNetwork.address
+        deployedNetwork && deployedNetwork.address
       );
-
-      setWeb3(web3);
       setAccounts(accounts);
-      setContract(contract);
+      setContract(instance);
+      setWeb3(web3);
     };
 
     const getProducts = async () => {
       const productsFromServer = await fetchProducts();
       setProducts(productsFromServer);
     };
-    init();
+
     getProducts();
+    init();
   }, []);
 
-  // Fetch Products
+  console.log(accounts, contract);
+
+  //거래서명받기
+  const handleSend = async (val) => {
+    console.log(val);
+
+    if (val > 0) {
+      await contract.methods.set(val).send({ from: accounts[0] });
+    }
+  };
+
+  // 제품 받아오기
   const fetchProducts = async () => {
     const res = await fetch("http://localhost:5000/products");
     const data = await res.json();
@@ -57,15 +65,7 @@ const App = () => {
     return data;
   };
 
-  // // Fetch Product
-  // const fetchProduct = async (id) => {
-  //   const res = await fetch(`http://localhost:5000/products/${id}`);
-  //   const data = await res.json();
-
-  //   return data;
-  // };
-
-  //add product
+  //제품 추가
   const addProduct = async (product) => {
     const res = await fetch("http://localhost:5000/products", {
       method: "POST",
@@ -80,6 +80,15 @@ const App = () => {
     setProducts([...products, data]);
   };
 
+  //제품 삭제
+  const deleteProduct = async (id) => {
+    const res = await fetch(`http://localhost:5000/products/${id}`, {
+      method: "DELETE",
+    });
+    window.location.href = "http://localhost:3000/";
+  };
+
+  //검색 핸들러
   const searchHandler = (searchTerm) => {
     setSearchTerm(searchTerm);
     if (searchTerm !== "") {
@@ -106,7 +115,6 @@ const App = () => {
             searchKeyword={searchHandler}
             searchResults={searchResults}
           />
-
           <Route
             path="/"
             exact
@@ -114,7 +122,6 @@ const App = () => {
               searchTerm.length <= 0 ? <Products products={products} /> : " "
             }
           />
-
           <Route
             path="/enroll"
             exact
@@ -124,10 +131,16 @@ const App = () => {
               </>
             )}
           />
-
-          <Route path="/detail/:id" component={Detail} />
-          <Route path="/login" component={Login} />
-          <Route path="/revise" component={Revise} />
+          <Route
+            path="/detail/:id"
+            render={() => (
+              <Detail
+                products={products}
+                handleSend={handleSend}
+                deleteProduct={deleteProduct}
+              />
+            )}
+          />
         </body>
       </div>
     </Router>

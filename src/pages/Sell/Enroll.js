@@ -32,10 +32,7 @@ const Enroll = ({ onAdd }) => {
     setQuantity("");
     setCategory("");
     alert("등록이 완료 되었습니다.");
-
-    if (window.location == "http://localhost:3000/enroll") {
-      window.location.href = "http://localhost:3000/";
-    }
+    window.location.href = "http://localhost:3000/";
   };
 
   return (
@@ -107,7 +104,11 @@ const Enroll = ({ onAdd }) => {
             onChange={(e) => setDescription(e.target.value)}
           />
           <div>
-            <input type="submit" value="등록하기" />
+            <input
+              className="font-mono font-extrabold bg-blue-400 bg-opacity-100 focus:outline-black"
+              type="submit"
+              value="등록하기"
+            />
           </div>
         </div>
       </div>

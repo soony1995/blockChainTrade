@@ -1,33 +1,12 @@
 import React from "react";
 import { Link } from "react-router-dom";
 
-const Product = ({
-  id,
-  title,
-  price,
-  quantity,
-  location,
-  description,
-  category,
-}) => {
+const Product = ({ id, price, description }) => {
   return (
     <div>
       {/* 상품 */}
       <div className="w-48 h-72 mr-2.5 mb-2.5 border-4">
-        <Link
-          to={{
-            pathname: `/detail/${id}`,
-            state: {
-              title: title,
-              price: price,
-              quantity: quantity,
-              location: location,
-              description: description,
-              id: id,
-              category: category,
-            },
-          }}
-        >
+        <Link to={{ pathname: `/detail/${id}`, state: { id: id } }}>
           {/* 상품 이미지 */}
           <div className="w-50 h-50 border-2">
             <img

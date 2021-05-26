@@ -2,8 +2,6 @@ import { React, useRef } from "react";
 import SearchResults from "./SearchResults";
 
 const SearchBar = ({ searchResults, searchTerm, searchKeyword }) => {
-  console.log(searchTerm);
-
   const inputEl = useRef("");
 
   const getSearchTerm = () => {
@@ -11,7 +9,7 @@ const SearchBar = ({ searchResults, searchTerm, searchKeyword }) => {
   };
 
   const renderProductList =
-    searchResults == ""
+    searchResults === ""
       ? ""
       : searchResults.map((searchResult) => {
           return (
