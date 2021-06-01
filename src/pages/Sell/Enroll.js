@@ -1,4 +1,3 @@
-import React from "react";
 import { useState } from "react";
 
 const Enroll = ({ onAdd }) => {
@@ -9,7 +8,8 @@ const Enroll = ({ onAdd }) => {
   const [quantity, setQuantity] = useState("");
   const [category, setCategory] = useState("");
 
-  const onSubmit = (e) => {
+  // 전송
+  const onSubmit = async (e) => {
     e.preventDefault();
     if (
       !title ||
@@ -23,7 +23,14 @@ const Enroll = ({ onAdd }) => {
       return;
     }
 
-    onAdd({ title, price, quantity, location, description, category });
+    onAdd({
+      title,
+      price,
+      quantity,
+      location,
+      description,
+      category,
+    });
 
     setTitle("");
     setPrice("");
@@ -31,85 +38,87 @@ const Enroll = ({ onAdd }) => {
     setDescription("");
     setQuantity("");
     setCategory("");
+
     alert("등록이 완료 되었습니다.");
     window.location.href = "http://localhost:3000/";
   };
 
   return (
     <form onSubmit={onSubmit}>
-      <div className="w-3/4 m-auto h-20 h-1/6 m-0 border-4 p-4  ">
-        <div>
-          <label>title</label>
+      <div className="w-3/4 m-auto h-full m-0 p-2   ">
+        <div className="p-6 pl-20">
+          <label className="not-italic font-extrabold ">제목 : </label>
           <input
-            className="ml-10 border-2"
+            className="ml-10 border-2 h-14 w-3/4 "
             type="text"
-            placeholder="title"
+            placeholder="제목 "
             value={title}
             onChange={(e) => setTitle(e.target.value)}
           />
         </div>
 
-        <div>
-          <label> price</label>
+        <div className="p-6 pl-20">
+          <label className="not-italic font-extrabold"> 가격 : </label>
           <input
-            className="ml-10 border-2"
-            type="text"
-            placeholder="price"
+            className="ml-10 border-2 h-14 w-3/4 "
+            type="number"
+            placeholder="가격"
             value={price}
             onChange={(e) => setPrice(e.target.value)}
           />
         </div>
 
-        <div>
-          <label> quantity</label>
+        <div className="p-6 pl-20">
+          <label className="not-italic font-extrabold"> 수량 : </label>
           <input
-            className="ml-10 border-2"
-            type="text"
-            placeholder="quantity"
+            className="ml-10 border-2 h-14 w-3/4 "
+            type="number"
+            placeholder="수량"
             value={quantity}
             onChange={(e) => setQuantity(e.target.value)}
           />
         </div>
 
-        <div>
-          <label> location</label>
+        <div className="p-6 pl-20">
+          <label className="not-italic font-extrabold"> 지역 : </label>
           <input
-            className="ml-10 border-2"
+            className="ml-10 border-2 h-14 w-3/4 "
             type="text"
-            placeholder="location"
+            placeholder="지역"
             value={location}
             onChange={(e) => setLocation(e.target.value)}
           />
         </div>
 
-        <div>
-          <label> categories</label>
+        <div className="p-6 pl-20">
+          <label className="not-italic font-extrabold">카테고리 :</label>
           <input
-            className="ml-10 border-2"
+            className="ml-10 border-2 h-14 w-3/4 "
             type="text"
-            placeholder="categories"
+            placeholder="카테고리"
             value={category}
             onChange={(e) => setCategory(e.target.value)}
           />
         </div>
 
-        <div>
-          <label> description</label>
+        <div className="p-6 pl-20">
+          <label className="not-italic font-extrabold"> 설명 : </label>
           <input
             border
-            className="ml-10 border-2"
+            className="ml-10 border-2 h-14 w-3/4 "
             type="text"
-            placeholder="description"
+            placeholder="설명"
             value={description}
             onChange={(e) => setDescription(e.target.value)}
           />
-          <div>
-            <input
-              className="font-mono font-extrabold bg-blue-400 bg-opacity-100 focus:outline-black"
-              type="submit"
-              value="등록하기"
-            />
-          </div>
+        </div>
+        <div className="flex justify-end ">
+          <button
+            className="not-italic font-extrabold bg-gray-200 rounded-lg p-5"
+            type="submit"
+          >
+            등록하기
+          </button>
         </div>
       </div>
     </form>

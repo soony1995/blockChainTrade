@@ -1,3 +1,4 @@
+import "./App.css";
 import Nav from "./components/Nav";
 import { BrowserRouter as Router, Route } from "react-router-dom";
 import Enroll from "./pages/Sell/Enroll";
@@ -14,7 +15,6 @@ const App = () => {
   const [searchResults, setSearchResults] = useState([]);
   const [accounts, setAccounts] = useState(null);
   const [contract, setContract] = useState(null);
-  const [web3, setWeb3] = useState(null);
 
   // const renderProductList = products.map((product) => {
   //   return <Search product={product} key={product.id} />;
@@ -34,7 +34,6 @@ const App = () => {
       );
       setAccounts(accounts);
       setContract(instance);
-      setWeb3(web3);
     };
 
     const getProducts = async () => {
@@ -50,10 +49,13 @@ const App = () => {
 
   //거래서명받기
   const handleSend = async (val) => {
-    console.log(val);
-
-    if (val > 0) {
-      await contract.methods.set(val).send({ from: accounts[0] });
+    try {
+      if (val > 0) {
+        console.log(val);
+        await contract.methods.set(val).send({ from: accounts[0] });
+      }
+    } catch (err) {
+      console.log(err);
     }
   };
 
@@ -107,7 +109,7 @@ const App = () => {
   return (
     <Router>
       <div>
-        <body className="box-border m-0 border-0 w-full border-4 ">
+        <body className="box-border m-0  w-full  ">
           <Nav />
 
           <SearchBar
@@ -122,6 +124,7 @@ const App = () => {
               searchTerm.length <= 0 ? <Products products={products} /> : " "
             }
           />
+
           <Route
             path="/enroll"
             exact

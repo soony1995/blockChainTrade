@@ -9,13 +9,12 @@ contract SimpleStorage {
 
     constructor(uint256 s) public {
         storedData = s;
+        owner = msg.sender;
         
     }
 
-    
-
     function set(uint256 x) public {
-        require(x < 1000, "Should be less than 1000");
+        require(x < 10000000, "Should be less than 1000");
         storedData = x;
         emit Change("set", x);
     }
@@ -23,6 +22,8 @@ contract SimpleStorage {
     function get() public view returns (uint256) {
         return storedData;
     }
+
+    
     
    
 }

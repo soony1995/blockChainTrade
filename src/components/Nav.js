@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 const Nav = () => {
   return (
     <nav>
-      <div className="flex items-center justify-between w-3/4 h-2/6 m-0 m-auto border-4 pt-6">
+      <div className="flex items-center justify-between w-3/4 h-2/6 m-0 m-auto border-1 pt-6">
         {/* 로고  */}
         <Link to="/">
           <svg
@@ -25,7 +25,9 @@ const Nav = () => {
 
         {/* 판매하기 버튼  */}
 
-        <Link to="/enroll">판매하기</Link>
+        <Link className="not-italic font-extrabold" to="/enroll">
+          판매하기
+        </Link>
       </div>
     </nav>
   );

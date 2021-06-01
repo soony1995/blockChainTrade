@@ -19,14 +19,14 @@ const SearchBar = ({ searchResults, searchTerm, searchKeyword }) => {
 
   return (
     <div>
-      <div className="flex justify-center w-3/4 m-auto h-20 h-1/6 m-0 border-4   ">
+      <div className="flex justify-center w-3/4 m-auto h-20 h-1/6 m-0    ">
         <div className="flex w-1/2 h-10 content-center  ">
           <input
             ref={inputEl}
             type="text"
             value={searchTerm}
             onChange={getSearchTerm}
-            className=" w-full h-10 border-solid border-2 border-light-blue-500"
+            className=" w-full h-13 border-solid border-2 border-light-blue-500"
             placeholder="검색어를 입력하세요."
           />
 
@@ -45,7 +45,7 @@ const SearchBar = ({ searchResults, searchTerm, searchKeyword }) => {
           </svg>
         </div>
       </div>
-      <div className="flex justify-center w-3/4 m-auto h-20 h-1/6 m-0 border-4">
+      <div className="flex justify-center w-3/4 m-auto h-20 h-1/6 m-0 ">
         <div className="flex">
           {renderProductList.length > 0 ? renderProductList : ""}
         </div>

@@ -32,28 +32,52 @@ const Detail = ({ products, handleSend, deleteProduct }) => {
 
   return (
     <div>
-      <div className="w-3/4 m-auto h-20 h-1/6 m-0 border-4   ">
-        <div> 이름 : {info.title}</div>
-        <div> 가격 : {info.price}</div>
-        <div> 위치 : {info.location}</div>
-        <div> 수량 : {info.quantity}</div>
-        <div> 설명 : {info.description}</div>
-        <button
-          onClick={() => {
-            handleSend(info.price);
-          }}
-        >
-          구매하기{" "}
-        </button>
+      <div className="w-3/4 m-auto h-96 m-0  ">
+        <div className=" grid grid-cols-5 gap-4 pt-24">
+          <div className=" flex justify-center row-span-5 col-span-2">
+            {" "}
+            이미지 들어갈 자리{" "}
+          </div>
+          <div className="col-span-2 p-6 not-italic font-extrabold">
+            {" "}
+            이름 : {info.title}
+          </div>
+          <div className="col-span-3 p-6 not-italic font-extrabold">
+            {" "}
+            가격 : {info.price} Eth
+          </div>
+          <div className=" p-6 not-italic font-extrabold">
+            {" "}
+            위치 : {info.location}
+          </div>
+          <div className="p-6 not-italic font-extrabold">
+            {" "}
+            수량 : {info.quantity}
+          </div>
+          <div className="col-span-3 p-6 pb-12 not-italic font-extrabold">
+            {" "}
+            설명 : {info.description}
+          </div>
+          <button
+            className=" not-italic font-extrabold  rounded-lg bg-gray-400 h-10"
+            onClick={() => {
+              console.log("구매하기 버튼 클릭");
+              handleSend(info.price);
+            }}
+          >
+            구매하기{" "}
+          </button>
 
-        <button
-          onClick={() => {
-            deleteProduct(info.id);
-            alert("삭제가 완료 되었습니다.");
-          }}
-        >
-          삭제하기
-        </button>
+          <button
+            className=" not-italic font-extrabold bg-red-500  rounded-lg h-10"
+            onClick={() => {
+              deleteProduct(info.id);
+              alert("삭제가 완료 되었습니다.");
+            }}
+          >
+            삭제하기
+          </button>
+        </div>
       </div>
     </div>
   );

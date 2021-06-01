@@ -8,6 +8,7 @@
     "@testing-library/react": "^11.1.0",
     "@testing-library/user-event": "^12.1.10",
     "@truffle/hdwallet-provider": "^1.2.6",
+    "axios": "^0.21.1",
     "babel-polyfill": "^6.26.0",
     "babel-register": "^6.26.0",
     "bootstrap": "^4.6.0",
@@ -27,11 +28,11 @@
     "web3": "^1.3.6"
   },
   "scripts": {
-    "start": "craco start",
+    "start": "craco start ",
     "build": "craco build",
     "test": "craco test",
     "eject": "react-scripts eject",
-    "server": "json-server --watch db.json --port 5000"
+    "server": "json-server --watch db.json --port 5000 "
   },
   "eslintConfig": {
     "extends": [
