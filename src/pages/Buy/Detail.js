@@ -67,12 +67,11 @@ const Detail = ({ products, handleSend, deleteProduct }) => {
           >
             구매하기{" "}
           </button>
-
+          {info.id}
           <button
             className=" not-italic font-extrabold bg-red-500  rounded-lg h-10"
             onClick={() => {
               deleteProduct(info.id);
-              alert("삭제가 완료 되었습니다.");
             }}
           >
             삭제하기

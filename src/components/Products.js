@@ -1,7 +1,7 @@
 import React from "react";
 import Product from "./Product";
 
-const Products = ({ products }) => {
+const Products = ({ products, images }) => {
   return (
     <section>
       <div className="flex flex-wrap justify-center w-3/4 m-auto h-full m-0   pt-14 ">
@@ -14,7 +14,7 @@ const Products = ({ products }) => {
             location={product.location}
             description={product.description}
             category={product.category}
-            porfileImg={product.porfileImg}
+            images={images}
           />
         ))}
       </div>

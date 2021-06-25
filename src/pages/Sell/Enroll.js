@@ -1,59 +1,100 @@
 import { useState } from "react";
+import { v4 as uuidv4 } from "uuid";
+import { projectStorage, projectFirestore, timestamp } from "../../firebase";
+const Enroll = () => {
+  const [product, setProduct] = useState({
+    id: uuidv4(),
+    title: "",
+    price: "",
+    quantity: "",
+    location: "",
+    description: "",
+    category: "",
+  });
 
-const Enroll = ({ onAdd }) => {
-  const [title, setTitle] = useState("");
-  const [price, setPrice] = useState("");
-  const [location, setLocation] = useState("");
-  const [description, setDescription] = useState("");
-  const [quantity, setQuantity] = useState("");
-  const [category, setCategory] = useState("");
+  const [file, setFile] = useState(null);
+  const [url, setUrl] = useState(null);
 
-  // 전송
+  const ref = projectFirestore.collection("products");
+  const collectionRef = projectFirestore.collection("images");
+
+  const use_Storage = () => {
+    const storageRef = projectStorage.ref(file.name);
+
+    storageRef.put(file).on("state_changed", async () => {
+      const url = await storageRef.getDownloadURL();
+      const createdAt = timestamp();
+      await collectionRef.add({ url, createdAt });
+      setUrl(url);
+    });
+  };
+
+  //image handle
+  const handleChange = (e) => {
+    if (e.target.files[0]) {
+      setFile(e.target.files[0]);
+    }
+  };
+
+  //product handle
+  const handleOnChange = (userKey, value) => {
+    setProduct({ ...product, [userKey]: value });
+  };
+
+  //onSubmit
   const onSubmit = async (e) => {
     e.preventDefault();
+
+    // handleUpload();
+    use_Storage();
+
     if (
-      !title ||
-      !price ||
-      !quantity ||
-      !location ||
-      !description ||
-      !category
+      !product.title ||
+      !product.price ||
+      !product.quantity ||
+      !product.location ||
+      !product.description ||
+      !product.category
     ) {
       alert("작성하지 않은 항목이 있습니다.");
       return;
     }
-
-    onAdd({
-      title,
-      price,
-      quantity,
-      location,
-      description,
-      category,
-    });
-
-    setTitle("");
-    setPrice("");
-    setLocation("");
-    setDescription("");
-    setQuantity("");
-    setCategory("");
-
-    alert("등록이 완료 되었습니다.");
-    window.location.href = "http://localhost:3000/";
+    console.log(url);
+    ref
+      .doc(product.id)
+      .set(product)
+      .then(() => {
+        setProduct({
+          title: "",
+          price: "",
+          quantity: "",
+          location: "",
+          description: "",
+          category: "",
+          url: "",
+        });
+      })
+      .catch((err) => {
+        console.error(err);
+      });
+    alert("등록이 완료되었습니다.");
   };
 
   return (
     <form onSubmit={onSubmit}>
       <div className="w-3/4 m-auto h-full m-0 p-2   ">
         <div className="p-6 pl-20">
+          <input type="file" onChange={handleChange} />
+        </div>
+
+        <div className="p-6 pl-20">
           <label className="not-italic font-extrabold ">제목 : </label>
           <input
             className="ml-10 border-2 h-14 w-3/4 "
             type="text"
             placeholder="제목 "
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
+            value={product.title}
+            onChange={(e) => handleOnChange("title", e.target.value)}
           />
         </div>
 
@@ -63,8 +104,8 @@ const Enroll = ({ onAdd }) => {
             className="ml-10 border-2 h-14 w-3/4 "
             type="number"
             placeholder="가격"
-            value={price}
-            onChange={(e) => setPrice(e.target.value)}
+            value={product.price}
+            onChange={(e) => handleOnChange("price", e.target.value)}
           />
         </div>
 
@@ -74,8 +115,8 @@ const Enroll = ({ onAdd }) => {
             className="ml-10 border-2 h-14 w-3/4 "
             type="number"
             placeholder="수량"
-            value={quantity}
-            onChange={(e) => setQuantity(e.target.value)}
+            value={product.quantity}
+            onChange={(e) => handleOnChange("quantity", e.target.value)}
           />
         </div>
 
@@ -85,8 +126,8 @@ const Enroll = ({ onAdd }) => {
             className="ml-10 border-2 h-14 w-3/4 "
             type="text"
             placeholder="지역"
-            value={location}
-            onChange={(e) => setLocation(e.target.value)}
+            value={product.location}
+            onChange={(e) => handleOnChange("location", e.target.value)}
           />
         </div>
 
@@ -96,8 +137,8 @@ const Enroll = ({ onAdd }) => {
             className="ml-10 border-2 h-14 w-3/4 "
             type="text"
             placeholder="카테고리"
-            value={category}
-            onChange={(e) => setCategory(e.target.value)}
+            value={product.category}
+            onChange={(e) => handleOnChange("category", e.target.value)}
           />
         </div>
 
@@ -108,8 +149,8 @@ const Enroll = ({ onAdd }) => {
             className="ml-10 border-2 h-14 w-3/4 "
             type="text"
             placeholder="설명"
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
+            value={product.description}
+            onChange={(e) => handleOnChange("description", e.target.value)}
           />
         </div>
         <div className="flex justify-end ">

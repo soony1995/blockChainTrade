@@ -8,6 +8,7 @@ import { useState, useEffect } from "react";
 import Products from "./components/Products";
 import getWeb3 from "./getWeb3";
 import SimpleStorage from "./client/SimpleStorage.json";
+import firebase from "./firebase";
 
 const App = () => {
   const [products, setProducts] = useState([]);
@@ -15,10 +16,44 @@ const App = () => {
   const [searchResults, setSearchResults] = useState([]);
   const [accounts, setAccounts] = useState(null);
   const [contract, setContract] = useState(null);
+  const [images, setImages] = useState(null);
 
-  // const renderProductList = products.map((product) => {
-  //   return <Search product={product} key={product.id} />;
-  // });
+  const ref = firebase.firestore().collection("products");
+  const ImgRef = firebase.firestore().collection("images");
+
+  // getProduct
+  const getProductList = () => {
+    ref.onSnapshot((querySnapshot) => {
+      const list = [];
+      querySnapshot.forEach((doc) => {
+        list.push(doc.data());
+      });
+      setProducts(list);
+    });
+  };
+
+  //getImageList
+  const getImageList = () => {
+    ImgRef.onSnapshot((querySnapshot) => {
+      const list = [];
+      querySnapshot.forEach((doc) => {
+        list.push(doc.data());
+      });
+      setImages(list);
+    });
+  };
+
+  //deleteProduct
+  const deleteProduct = (id) => {
+    console.log(id);
+    ref
+      .doc(id)
+      .delete()
+      .catch((err) => {
+        console.error(err);
+      });
+    alert("삭제가 완료 되었습니다.");
+  };
 
   useEffect(() => {
     const init = async () => {
@@ -36,12 +71,8 @@ const App = () => {
       setContract(instance);
     };
 
-    const getProducts = async () => {
-      const productsFromServer = await fetchProducts();
-      setProducts(productsFromServer);
-    };
-
-    getProducts();
+    getImageList();
+    getProductList();
     init();
   }, []);
 
@@ -59,53 +90,6 @@ const App = () => {
     }
   };
 
-  // 제품 받아오기
-  const fetchProducts = async () => {
-    const res = await fetch("http://localhost:5000/products");
-    const data = await res.json();
-
-    return data;
-  };
-
-  //제품 추가
-  const addProduct = async (product) => {
-    const res = await fetch("http://localhost:5000/products", {
-      method: "POST",
-      headers: {
-        "Content-type": "application/json",
-      },
-      body: JSON.stringify(product),
-    });
-
-    const data = await res.json();
-
-    setProducts([...products, data]);
-  };
-
-  //제품 삭제
-  const deleteProduct = async (id) => {
-    const res = await fetch(`http://localhost:5000/products/${id}`, {
-      method: "DELETE",
-    });
-    window.location.href = "http://localhost:3000/";
-  };
-
-  //검색 핸들러
-  const searchHandler = (searchTerm) => {
-    setSearchTerm(searchTerm);
-    if (searchTerm !== "") {
-      const newProductsList = products.filter((product) => {
-        return Object.values(product)
-          .join(" ")
-          .toLowerCase()
-          .includes(searchTerm.toLowerCase());
-      });
-      setSearchResults(newProductsList);
-    } else {
-      setSearchResults("");
-    }
-  };
-
   return (
     <Router>
       <div>
@@ -114,14 +98,19 @@ const App = () => {
 
           <SearchBar
             searchTerm={searchTerm}
-            searchKeyword={searchHandler}
+            // searchKeyword={searchHandler}
             searchResults={searchResults}
           />
+
           <Route
             path="/"
             exact
             render={() =>
-              searchTerm.length <= 0 ? <Products products={products} /> : " "
+              searchTerm.length <= 0 ? (
+                <Products products={products} images={images} />
+              ) : (
+                " "
+              )
             }
           />
 
@@ -130,7 +119,7 @@ const App = () => {
             exact
             render={() => (
               <>
-                <Enroll onAdd={addProduct} />
+                <Enroll />
               </>
             )}
           />
@@ -138,6 +127,7 @@ const App = () => {
             path="/detail/:id"
             render={() => (
               <Detail
+                images={images}
                 products={products}
                 handleSend={handleSend}
                 deleteProduct={deleteProduct}
